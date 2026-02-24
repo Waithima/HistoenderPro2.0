@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Support | HistoEnder Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --border-radius-lg: 12px;
+            --border-radius-md: 8px;
+            --border-radius-sm: 6px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Mobile Navigation Toggle */
+        .mobile-nav-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .mobile-nav-toggle:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        /* Mobile Slide Navigation */
+        .mobile-slide-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-slide-nav.active {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-nav-title {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .mobile-close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .mobile-sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mobile-sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            color: var(--gray-300);
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+        .mobile-sidebar-link:hover,
+        .mobile-sidebar-link.active {
+            background: rgba(37, 99, 235, 0.2);
+            color: white;
+            border-left-color: var(--primary);
+        }
+
+        .mobile-sidebar-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .logo-text .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .mobile-slide-nav {
+                display: block;
+            }
+            
+            .mobile-nav-toggle {
+                display: flex;
+            }
+            
+            .header {
+                padding: 1.5rem;
+            }
+            
+            .logo {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.5rem;
+            }
+            
+            .nav {
+                justify-content: center;
+            }
+            
+            .nav-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.25rem;
+            }
+            
+            .logo-text .subtitle {
+                font-size: 0.875rem;
+            }
+            
+            .nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+            
+            .nav-btn {
+                justify-content: center;
+                padding: 0.75rem;
+            }
+            
+            .mobile-nav-toggle {
+                bottom: 15px;
+                right: 15px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-text h1 {
+                font-size: 1.1rem;
+            }
+            
+            .mobile-nav-toggle {
+                bottom: 10px;
+                right: 10px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+            background: white;
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+        }
+
+        .sidebar h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-link {
+            padding: 0.5rem 0.75rem;
+            color: var(--gray-600);
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.875rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-link:hover {
+            background: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .sidebar-link.active {
+            background: var(--gray-100);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: var(--border-radius-md);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .section-header i {
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Cards */
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: var(--gray-100);
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .feature-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card-header i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .feature-card-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        /* Guides */
+        .guide-step {
+            background: var(--gray-100);
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .step-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Video Container */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: var(--border-radius-md);
+            margin: 2rem 0;
+            background: var(--dark);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* FAQ */
+        .faq-item {
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.5rem 0;
+        }
+
+        .faq-question {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .faq-question i {
+            color: var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-question.active i {
+            transform: rotate(90deg);
+        }
+
+        .faq-answer {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+            display: none;
+        }
+
+        .faq-answer.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Tables */
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.875rem;
+        }
+
+        .spec-table th {
+            background: var(--gray-100);
+            color: var(--dark);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-200);
+        }
+
+        .spec-table td {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-200);
+            color: var(--gray-600);
+        }
+
+        .spec-table tr:nth-child(even) {
+            background: var(--gray-100);
+        }
+
+        /* Contact Form */
+        .contact-form {
+            display: grid;
+            gap: 1.5rem;
+            max-width: 600px;
+            margin-top: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            margin-bottom: 2rem;
+        }
+
+        .back-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--gray-600);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* Utility Classes */
+        .text-lg {
+            font-size: 1.125rem;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .text-muted {
+            color: var(--gray-600);
+        }
+
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--border-radius-sm);
+            margin: 1rem 0;
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert i {
+            font-size: 1.25rem;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #1a1b26;
+            color: #a9b1d6;
+            border-radius: var(--border-radius-sm);
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        /* Contact Info Cards */
+        .contact-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .contact-card {
+            background: var(--gray-100);
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .contact-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-card-header i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .contact-card-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .contact-email {
+            color: var(--primary);
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .contact-email:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Navigation Toggle -->
+    <button class="mobile-nav-toggle" id="mobileNavToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Slide Navigation -->
+    <div class="mobile-slide-nav" id="mobileSlideNav">
+        <div class="mobile-nav-header">
+            <div class="mobile-nav-title">Help & Support Topics</div>
+            <button class="mobile-close-btn" id="mobileCloseBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="mobile-sidebar-nav">
+            <a href="#overview" class="mobile-sidebar-link active" onclick="showSection('overview'); closeMobileNav()">
+                <i class="fas fa-info-circle"></i> Overview
+            </a>
+            <a href="#what-is" class="mobile-sidebar-link" onclick="showSection('what-is'); closeMobileNav()">
+                <i class="fas fa-microscope"></i> What is HistoEnder?
+            </a>
+            <a href="#getting-started" class="mobile-sidebar-link" onclick="showSection('getting-started'); closeMobileNav()">
+                <i class="fas fa-rocket"></i> Getting Started
+            </a>
+            <a href="#web-app-guide" class="mobile-sidebar-link" onclick="showSection('web-app-guide'); closeMobileNav()">
+                <i class="fas fa-laptop-code"></i> Web App Guide
+            </a>
+            <a href="#gcode-guide" class="mobile-sidebar-link" onclick="showSection('gcode-guide'); closeMobileNav()">
+                <i class="fas fa-code"></i> G-Code Generation
+            </a>
+            <a href="#serial-guide" class="mobile-sidebar-link" onclick="showSection('serial-guide'); closeMobileNav()">
+                <i class="fas fa-usb"></i> Web Serial Control
+            </a>
+            <a href="#videos" class="mobile-sidebar-link" onclick="showSection('videos'); closeMobileNav()">
+                <i class="fab fa-youtube"></i> Video Tutorials
+            </a>
+            <a href="#troubleshooting" class="mobile-sidebar-link" onclick="showSection('troubleshooting'); closeMobileNav()">
+                <i class="fas fa-wrench"></i> Troubleshooting
+            </a>
+            <a href="#faq" class="mobile-sidebar-link" onclick="showSection('faq'); closeMobileNav()">
+                <i class="fas fa-question-circle"></i> FAQ
+            </a>
+            <a href="#specs" class="mobile-sidebar-link" onclick="showSection('specs'); closeMobileNav()">
+                <i class="fas fa-cogs"></i> Technical Specs
+            </a>
+            <a href="#contact" class="mobile-sidebar-link" onclick="showSection('contact'); closeMobileNav()">
+                <i class="fas fa-envelope"></i> Contact
+            </a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>HistoEnder Pro Help & Support</h1>
+                    <p class="subtitle">Complete Guides, Tutorials, and Resources for Your Automated Staining System</p>
+                </div>
+            </div>
+            <div class="nav">
+                <a href="histopro.html" class="nav-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Generator
+                </a>
+                <a href="#getting-started" class="nav-btn" onclick="showSection('getting-started')">
+                    <i class="fas fa-play-circle"></i> Getting Started
+                </a>
+                <a href="#videos" class="nav-btn" onclick="showSection('videos')">
+                    <i class="fab fa-youtube"></i> Video Tutorials
+                </a>
+                <a href="#contact" class="nav-btn" onclick="showSection('contact')">
+                    <i class="fas fa-envelope"></i> Contact Support
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="content-grid">
+            <!-- Sidebar Navigation -->
+            <aside class="sidebar">
+                <h3>Help Topics</h3>
+                <nav class="sidebar-nav">
+                    <a href="#overview" class="sidebar-link active" onclick="showSection('overview')">
+                        <i class="fas fa-info-circle"></i> Overview
+                    </a>
+                    <a href="#what-is" class="sidebar-link" onclick="showSection('what-is')">
+                        <i class="fas fa-microscope"></i> What is HistoEnder?
+                    </a>
+                    <a href="#getting-started" class="sidebar-link" onclick="showSection('getting-started')">
+                        <i class="fas fa-rocket"></i> Getting Started
+                    </a>
+                    <a href="#web-app-guide" class="sidebar-link" onclick="showSection('web-app-guide')">
+                        <i class="fas fa-laptop-code"></i> Web App Guide
+                    </a>
+                    <a href="#gcode-guide" class="sidebar-link" onclick="showSection('gcode-guide')">
+                        <i class="fas fa-code"></i> G-Code Generation
+                    </a>
+                    <a href="#serial-guide" class="sidebar-link" onclick="showSection('serial-guide')">
+                        <i class="fas fa-usb"></i> Web Serial Control
+                    </a>
+                    <a href="#videos" class="sidebar-link" onclick="showSection('videos')">
+                        <i class="fab fa-youtube"></i> Video Tutorials
+                    </a>
+                    <a href="#troubleshooting" class="sidebar-link" onclick="showSection('troubleshooting')">
+                        <i class="fas fa-wrench"></i> Troubleshooting
+                    </a>
+                    <a href="#faq" class="sidebar-link" onclick="showSection('faq')">
+                        <i class="fas fa-question-circle"></i> FAQ
+                    </a>
+                    <a href="#specs" class="sidebar-link" onclick="showSection('specs')">
+                        <i class="fas fa-cogs"></i> Technical Specs
+                    </a>
+                    <a href="#contact" class="sidebar-link" onclick="showSection('contact')">
+                        <i class="fas fa-envelope"></i> Contact
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main>
+                <!-- Overview Section -->
+                <section id="overview" class="content-section active">
+                    <div class="section-header">
+                        <i class="fas fa-info-circle"></i>
+                        <h2>Welcome to HistoEnder Pro Help Center</h2>
+                    </div>
+                    
+                    <p class="text-lg mb-3">
+                        This comprehensive help center provides everything you need to use the HistoEnder Pro web application and operate your HistoEnder automated staining system.
+                    </p>
+                    
+                    <div class="alert">
+                        <i class="fas fa-lightbulb"></i>
+                        <div>
+                            <strong>Quick Tip:</strong> Use the sidebar navigation to jump to specific topics. All information is based on the official HistoEnder research and documentation.
+                        </div>
+                    </div>
+                    
+                    <div class="feature-cards">
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <i class="fas fa-dna"></i>
+                                <h4>What is HistoEnder?</h4>
+                            </div>
+                            <p>
+                                HistoEnder is an automated microscope slide autostainer created by modifying a Creality Ender-3 3D printer. It's inexpensive, modular, and can simultaneously stain up to 23 slides.
+                            </p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <i class="fas fa-laptop-code"></i>
+                                <h4>Web Application</h4>
+                            </div>
+                            <p>
+                                The HistoEnder Pro web app simplifies G-Code generation for staining protocols and provides direct USB control through Web Serial API.
+                            </p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <i class="fas fa-vial"></i>
+                                <h4>Proven Results</h4>
+                            </div>
+                            <p>
+                                H&E staining results from HistoEnder are indistinguishable from manually stained sections, while reducing hands-on time from 1 hour to under 5 minutes.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- What is HistoEnder Section -->
+                <section id="what-is" class="content-section">
+                    <div class="section-header">
+                        <i class="fas fa-microscope"></i>
+                        <h2>What is HistoEnder?</h2>
+                    </div>
+                    
+                    <h3 class="mb-2">The Problem & Solution</h3>
+                    <p class="mb-3">
+                        Small to medium-sized histology & pathology laboratories worldwide waste hours of labor by manually performing staining procedures that could be easily automated. Commercial automated stainers typically cost €2,000-€10,000, making them impractical for non-intensive work.
+                    </p>
+                    
+                    <p class="mb-4">
+                        The HistoEnder solves this by converting a low-cost Creality Ender-3 3D printer (under €200) into a fully functional automated slide stainer. The machine retains its 3D printing capabilities and can be reverted in less than a minute.
+                    </p>
+                    
+                    <h3 class="mb-2">Key Features</h3>
+                    <ul class="mb-4" style="padding-left: 1.5rem; color: var(--gray-600);">
+                        <li class="mb-2"><strong>Low Cost:</strong> Total cost under €200 including printer</li>
+                        <li class="mb-2"><strong>Easy Setup:</strong> Only two 3D-printed parts needed</li>
+                        <li class="mb-2"><strong>High Capacity:</strong> Stains up to 23 slides simultaneously</li>
+                        <li class="mb-2"><strong>Versatile:</strong> Can perform various staining protocols (H&E, Giemsa, PAS, etc.)</li>
+                        <li class="mb-2"><strong>Dual Function:</strong> Maintains full 3D printing capabilities</li>
+                        <li class="mb-2"><strong>Open Source:</strong> All designs and software are openly available</li>
+                    </ul>
+                    
+                    <h3 class="mb-2">How It Works</h3>
+                    <p class="mb-3">
+                        The HistoEnder is a fully programmable Cartesian FDM 3D printer that moves a slide rack loaded with microscope slides through different solvent/staining jars in a specific sequence with precise timing.
+                    </p>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Hardware Modification</div>
+                        <p>Two 3D-printed parts are added: a jar holder for the printer bed and a headpiece for mounting the slide holder on the printhead.</p>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Software Control</div>
+                        <p>G-Code controls the printer's movements to dip slides into jars at precise positions and for specific durations.</p>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Staining Process</div>
+                        <p>The printer automatically moves slides through up to 8 staining jars in programmed sequence and timing.</p>
+                    </div>
+                </section>
+
+                <!-- Getting Started Section -->
+                <section id="getting-started" class="content-section">
+                    <div class="section-header">
+                        <i class="fas fa-rocket"></i>
+                        <h2>Getting Started Guide</h2>
+                    </div>
+                    
+                    <h3 class="mb-2">Prerequisites</h3>
+                    <ul class="mb-4" style="padding-left: 1.5rem; color: var(--gray-600);">
+                        <li class="mb-2">Creality Ender-3 3D printer</li>
+                        <li class="mb-2">3D printer filament (PETG recommended, ~450 grams)</li>
+                        <li class="mb-2">Standard histological staining jars (8 jars)</li>
+                        <li class="mb-2">Microscope slide holder (up to 23 slides)</li>
+                        <li class="mb-2">Computer with internet access</li>
+                    </ul>
+                    
+                    <h3 class="mb-2">Step-by-Step Setup</h3>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Print the Parts</div>
+                        <p>Print the two required parts: jar holder and headpiece. Use PETG filament for durability.</p>
+                        <div class="code-block mt-2">
+                            Material: PETG<br>
+                            Jar holder dimensions: 46.4 x 102.5 x 100 mm<br>
+                            Space between cutouts: 6.0 mm
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Assemble the HistoEnder</div>
+                        <p>Mount the jar holder on the printer bed and the headpiece on the printhead. Use the alignment guide for precise positioning.</p>
+                        <div class="code-block mt-2">
+                            Raise position: Z=250 mm (travel height)<br>
+                            Dip position: Z=130 mm (submerged)
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Prepare Staining Jars</div>
+                        <p>Place up to 8 staining jars in the holder. Standard jar size: 45.6 x 101.3 x 93.4 mm.</p>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Load Slides</div>
+                        <p>Load up to 23 microscope slides into the slide holder and mount it on the headpiece.</p>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">5</div>
+                        <div class="step-title">Generate G-Code</div>
+                        <p>Use the HistoEnder Pro web application to generate G-Code for your staining protocol.</p>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">6</div>
+                        <div class="step-title">Run the Program</div>
+                        <p>Transfer G-Code to printer via SD card or use Web Serial for direct USB control.</p>
+                    </div>
+                </section>
+
+                <!-- Web App Guide Section -->
+                <section id="web-app-guide" class="content-section">
+                    <div class="section-header">
+                        <i class="fas fa-laptop-code"></i>
+                        <h2>Web Application Guide</h2>
+                    </div>
+                    
+                    <h3 class="mb-2">Interface Overview</h3>
+                    <p class="mb-4">
+                        The HistoEnder Pro web app provides an intuitive interface for generating staining protocols and controlling your HistoEnder.
+                    </p>
+                    
+                    <div class="feature-cards">
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <i class="fas fa-sliders-h"></i>
+                                <h4>Protocol Configuration</h4>
+                            </div>
+                            <p>Select from pre-defined protocols (H&E, Giemsa, PAS) or create custom protocols with specific times for each jar.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <i class="fas fa-vial"></i>
+                                <h4>Jar Management</h4>
+                            </div>
+                            <p>Configure up to 8 staining jars with custom reagent names and timing for each step.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <i class="fas fa-bolt"></i>
+                                <h4>Action Controls</h4>
+                            </div>
+                            <p>Generate G-Code, run dry tests, download files, or send directly to printer via USB.</p>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mt-4 mb-2">Key Features Explained</h3>
+                    
+                    <div class="guide-step">
+                        <div class="step-title">Protocol Selector</div>
+                        <p>Choose from built-in protocols or create custom ones. Each protocol includes optimized timing for specific staining methods.</p>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-title">Jar Configuration Grid</div>
+                        <p>Each jar can be individually configured with reagent name and staining time (in seconds). Click "Edit" to customize reagent names.</p>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-title">G-Code Preview</div>
+                        <p>Real-time preview of generated G-Code with syntax highlighting. Copy or download the code for use.</p>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-title">Direct USB Control</div>
+                        <p>Connect directly to your HistoEnder via USB using Web Serial API (requires Chrome/Edge).</p>
+                    </div>
+                </section>
+
+                <!-- G-Code Generation Section -->
+                <section id="gcode-guide" class="content-section">
+                    <div class="section-header">
+                        <i class="fas fa-code"></i>
+                        <h2>G-Code Generation Guide</h2>
+                    </div>
+                    
+                    <h3 class="mb-2">Understanding G-Code</h3>
+                    <p class="mb-3">
+                        G-Code is the programming language that controls 3D printer movements. The HistoEnder Pro app generates complete G-Code sequences for automated staining.
+                    </p>
+                    
+                    <div class="alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Important:</strong> All generated G-Code includes safety headers and the jar holder installation sequence. Always verify G-Code before running.
+                        </div>
+                    </div>
+                    
+                    <h3 class="mb-2">Generated G-Code Structure</h3>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Safety Headers</div>
+                        <div class="code-block">
+G90 ; Absolute positioning<br>
+M106 S0 ; Fan off<br>
+M302 S0 ; Allow cold extrusion<br>
+G28 ; Home all axes
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Jar Holder Installation</div>
+                        <p>Includes pause for installing jar holder and audible start beeps.</p>
+                        <div class="code-block">
+G1 Z250 F5000 ; Safe height for installation<br>
+G1 X33 Y169.5 ; Jar 1 position<br>
+M0 ; PAUSE - Install jar holder<br>
+M300 S660 P200 ; Start beep
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Staining Sequence</div>
+                        <p>For each active jar, moves to position, dips to Z=130, waits, then raises to Z=250.</p>
+                        <div class="code-block">
+; Jar 1: Haematoxylin<br>
+G1 Z250 F5000<br>
+G1 X33 Y169.5 F500<br>
+G1 Z130 ; Dip position<br>
+G4 S900 ; Wait 900 seconds<br>
+G1 Z250 F5000 ; Raise
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Program Completion</div>
+                        <p>Returns to start position, sounds completion beeps, and pauses for jar removal.</p>
+                    </div>
+                    
+                    <h3 class="mt-4 mb-2">Jar Coordinates</h3>
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>Jar</th>
+                                <th>X Coordinate</th>
+                                <th>Y Coordinate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Jar 1</td><td>X33</td><td>Y169.5</td></tr>
+                            <tr><td>Jar 2</td><td>X86.5</td><td>Y169.5</td></tr>
+                            <tr><td>Jar 3</td><td>X140</td><td>Y169.5</td></tr>
+                            <tr><td>Jar 4</td><td>X193.5</td><td>Y169.5</td></tr>
+                            <tr><td>Jar 5</td><td>X193.5</td><td>Y60</td></tr>
+                            <tr><td>Jar 6</td><td>X140</td><td>Y60</td></tr>
+                            <tr><td>Jar 7</td><td>X86.5</td><td>Y60</td></tr>
+                            <tr><td>Jar 8</td><td>X33</td><td>Y60</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Web Serial Control Section -->
+                <section id="serial-guide" class="content-section">
+                    <div class="section-header">
+                        <i class="fas fa-usb"></i>
+                        <h2>Web Serial Control Guide</h2>
+                    </div>
+                    
+                    <h3 class="mb-2">What is Web Serial API?</h3>
+                    <p class="mb-3">
+                        Web Serial API allows web applications to communicate with serial devices (like your HistoEnder) directly via USB, eliminating the need for SD cards.
+                    </p>
+                    
+                    <div class="alert">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Browser Support:</strong> Web Serial API is supported in Chrome 89+, Edge 89+, and Opera 76+. Not available in Safari or Firefox.
+                        </div>
+                    </div>
+                    
+                    <h3 class="mb-2">Connection Process</h3>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Connect USB Cable</div>
+                        <p>Connect your HistoEnder to your computer using a USB cable (same as for 3D printing).</p>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Click "Connect USB"</div>
+                        <p>In the web app, click the green "Connect USB" button in the Direct USB Control panel.</p>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Select Device</div>
+                        <p>Your browser will show a device selection dialog. Choose your HistoEnder (usually appears as "USB Serial Device" or similar).</p>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Generate G-Code</div>
+                        <p>Configure your protocol and generate G-Code as usual.</p>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">5</div>
+                        <div class="step-title">Send to Printer</div>
+                        <p>Click "Send G-Code" to transmit the program directly to your HistoEnder. Monitor progress in the response panel.</p>
+                    </div>
+                    
+                    <h3 class="mt-4 mb-2">Troubleshooting Web Serial</h3>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            The "Connect USB" button is disabled or not showing
+                        </div>
+                        <div class="faq-answer">
+                            <p>Your browser may not support Web Serial API. Try Chrome or Edge. Also ensure you're accessing the page via HTTPS (required for Web Serial).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            Device not appearing in selection dialog
+                        </div>
+                        <div class="faq-answer">
+                            <p>1. Check USB cable connection<br>2. Ensure HistoEnder is powered on<br>3. Try different USB port<br>4. Restart browser<br>5. Check if device appears in your operating system's device manager</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            Connection drops during G-Code sending
+                        </div>
+                        <div class="faq-answer">
+                            <p>1. Use a high-quality USB cable<br>2. Avoid touching/moving cable during transfer<br>3. Close other applications using serial ports<br>4. Reduce transfer speed by adding delays in settings</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Video Tutorials Section -->
+                <section id="videos" class="content-section">
+                    <div class="section-header">
+                        <i class="fab fa-youtube"></i>
+                        <h2>Video Tutorials & Resources</h2>
+                    </div>
+                    
+                    <h3 class="mb-2">Official HistoEnder Demonstration Video</h3>
+                    <p class="mb-3">
+                        Watch the official HistoEnder demonstration to see the system in action, from setup to staining results:
+                    </p>
+                    
+                    <!-- Video Embed -->
+                    <div class="video-container">
+                        <iframe 
+                            src="https://www.youtube.com/embed/fK0MTESW2LU?si=L53NR3RPWuw3tQ_B" 
+                            title="HistoEnder Demonstration Video" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    
+                    <div class="alert mt-3">
+                        <i class="fas fa-video"></i>
+                        <div>
+                            <strong>Video Details:</strong> This official demonstration shows the complete HistoEnder setup, operation, and staining results. The video demonstrates how a standard Creality Ender-3 3D printer is converted into an automated slide stainer.
+                        </div>
+                    </div>
+                    
+                    <h3 class="mt-4 mb-2">What the Video Shows</h3>
+                    <ul class="mb-4" style="padding-left: 1.5rem; color: var(--gray-600);">
+                        <li class="mb-2"><strong>00:00-02:00:</strong> Introduction and overview of the HistoEnder concept</li>
+                        <li class="mb-2"><strong>02:00-04:30:</strong> 3D printed parts and assembly process</li>
+                        <li class="mb-2"><strong>04:30-06:00:</strong> Loading slides and staining jars</li>
+                        <li class="mb-2"><strong>06:00-08:30:</strong> G-Code generation and printer setup</li>
+                        <li class="mb-2"><strong>08:30-10:00:</strong> Automated staining process in action</li>
+                        <li class="mb-2"><strong>10:00-12:00:</strong> Results comparison with manual staining</li>
+                    </ul>
+                    
+                    <h3 class="mb-2">Key Takeaways from the Video</h3>
+                    
+                    <div class="feature-cards">
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <i class="fas fa-cogs"></i>
+                                <h4>Simple Conversion</h4>
+                            </div>
+                            <p>Only two 3D-printed parts needed to convert a standard Ender-3 into a fully functional automated stainer.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <i class="fas fa-vial"></i>
+                                <h4>Professional Results</h4>
+                            </div>
+                            <p>H&E staining quality is indistinguishable from manually stained sections, validated by pathologists.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <i class="fas fa-clock"></i>
+                                <h4>Time Savings</h4>
+                            </div>
+                            <p>Reduces hands-on time from 1 hour to under 5 minutes while processing up to 23 slides simultaneously.</p>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mt-4 mb-2">Additional Video Resources</h3>
+                    <p class="mb-3">For more detailed tutorials, search YouTube for these topics:</p>
+                    
+                    <div class="feature-cards">
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <i class="fas fa-print"></i>
+                                <h4>Printing the Parts</h4>
+                            </div>
+                            <p>Search: "HistoEnder STL printing" - tutorials on optimal print settings for the jar holder and headpiece.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <i class="fas fa-code"></i>
+                                <h4>Custom G-Code</h4>
+                            </div>
+                            <p>Search: "HistoEnder G-Code tutorial" - advanced customization beyond the web app's presets.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-card-header">
+                                <i class="fas fa-flask"></i>
+                                <h4>Protocol Variations</h4>
+                            </div>
+                            <p>Search: "HistoEnder staining protocols" - community-shared modifications for different tissue types.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Troubleshooting Section -->
+                <section id="troubleshooting" class="content-section">
+                    <div class="section-header">
+                        <i class="fas fa-wrench"></i>
+                        <h2>Troubleshooting Guide</h2>
+                    </div>
+                    
+                    <h3 class="mb-2">Common Issues & Solutions</h3>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            Slides not dipping into jars properly
+                        </div>
+                        <div class="faq-answer">
+                            <p><strong>Possible causes:</strong><br>
+                            1. Incorrect Z-height settings (should be Z=130 for dip)<br>
+                            2. Jar holder misaligned on print bed<br>
+                            3. Headpiece not securely mounted<br>
+                            <strong>Solutions:</strong><br>
+                            - Run G28 homing command first<br>
+                            - Use alignment guide for jar holder positioning<br>
+                            - Verify Z-offset in G-Code</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            G-Code not running on printer
+                        </div>
+                        <div class="faq-answer">
+                            <p><strong>Possible causes:</strong><br>
+                            1. SD card formatting issues<br>
+                            2. Corrupted G-Code file<br>
+                            3. Printer firmware compatibility<br>
+                            <strong>Solutions:</strong><br>
+                            - Format SD card as FAT32<br>
+                            - Regenerate G-Code in web app<br>
+                            - Update printer firmware<br>
+                            - Try direct USB connection instead</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            Staining results inconsistent
+                        </div>
+                        <div class="faq-answer">
+                            <p><strong>Possible causes:</strong><br>
+                            1. Timing discrepancies due to Z-axis movement speed<br>
+                            2. Reagent evaporation or contamination<br>
+                            3. Slide positioning variations<br>
+                            <strong>Solutions:</strong><br>
+                            - Account for Z-axis movement in timing (add 2-3 seconds)<br>
+                            - Cover jars when not in use<br>
+                            - Ensure slides are securely mounted</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            Printer movements jerky or inaccurate
+                        </div>
+                        <div class="faq-answer">
+                            <p><strong>Possible causes:</strong><br>
+                            1. Loose belts or pulleys<br>
+                            2. Over-tightened components<br>
+                            3. Mechanical binding<br>
+                            <strong>Solutions:</strong><br>
+                            - Perform regular 3D printer maintenance<br>
+                            - Check belt tension and pulley screws<br>
+                            - Lubricate Z-axis rod<br>
+                            - Run calibration prints</p>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mt-4 mb-2">Maintenance Checklist</h3>
+                    <ul class="mb-4" style="padding-left: 1.5rem; color: var(--gray-600);">
+                        <li class="mb-2"><strong>Weekly:</strong> Clean jar holder, check for reagent spills, inspect slide holder</li>
+                        <li class="mb-2"><strong>Monthly:</strong> Lubricate Z-axis rod, check belt tension, clean print bed</li>
+                        <li class="mb-2"><strong>As needed:</strong> Re-level print bed, calibrate extruder, update firmware</li>
+                        <li class="mb-2"><strong>After staining:</strong> Clean all components that contacted reagents</li>
+                    </ul>
+                </section>
+
+                <!-- FAQ Section -->
+                <section id="faq" class="content-section">
+                    <div class="section-header">
+                        <i class="fas fa-question-circle"></i>
+                        <h2>Frequently Asked Questions</h2>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            How much does HistoEnder cost?
+                        </div>
+                        <div class="faq-answer">
+                            <p>The total cost is under €200, including the Creality Ender-3 printer and materials for 3D-printed parts. This compares to €2,000-€10,000 for commercial automated stainers.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            How many slides can it stain at once?
+                        </div>
+                        <div class="faq-answer">
+                            <p>HistoEnder can stain up to 23 microscope slides simultaneously. The headpiece is designed to accommodate standard slide holders available on the market.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            Can I still use it as a 3D printer?
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! The HistoEnder retains complete 3D printing functionality and can be reverted back to a normal 3D printer in less than 1 minute by removing the two added parts.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            What staining protocols are supported?
+                        </div>
+                        <div class="faq-answer">
+                            <p>The web app includes H&E, Giemsa, and PAS protocols, but any staining protocol can be created. HistoEnder has also been adapted for TEM grid staining.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            How accurate are the staining results?
+                        </div>
+                        <div class="faq-answer">
+                            <p>H&E staining results from HistoEnder are indistinguishable from manually stained sections. The main limitation is accounting for Z-axis movement speed in timing calculations.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            Is technical knowledge required?
+                        </div>
+                        <div class="faq-answer">
+                            <p>Basic 3D printing knowledge is helpful for setup. The web app makes G-Code generation simple, but understanding G-Code basics allows for advanced customization.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            What are the main limitations?
+                        </div>
+                        <div class="faq-answer">
+                            <p>Three main limitations: 1) Print bed size limits to 8 jars, 2) Headpiece holds max 23 slides, 3) Z-axis speed affects precise timing.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <i class="fas fa-chevron-right"></i>
+                            Can it be used for other applications?
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! HistoEnder can be used in chemistry and material science for surface modifications and dip coating. The EnderScope project shows similar 3D printer repurposing for microscopy.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Technical Specifications Section -->
+                <section id="specs" class="content-section">
+                    <div class="section-header">
+                        <i class="fas fa-cogs"></i>
+                        <h2>Technical Specifications</h2>
+                    </div>
+                    
+                    <h3 class="mb-2">HistoEnder Specifications</h3>
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Specification</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Base Printer</td><td>Creality Ender-3</td></tr>
+                            <tr><td>Total Cost</td><td>Under €200</td></tr>
+                            <tr><td>3D Printed Parts</td><td>2 parts (jar holder & headpiece)</td></tr>
+                            <tr><td>Material Required</td><td>~450g PETG</td></tr>
+                            <tr><td>Jar Holder Dimensions</td><td>46.4 x 102.5 x 100 mm</td></tr>
+                            <tr><td>Staining Jar Size</td><td>45.6 x 101.3 x 93.4 mm</td></tr>
+                            <tr><td>Max Jars</td><td>8</td></tr>
+                            <tr><td>Max Slides</td><td>23</td></tr>
+                            <tr><td>Raise Position (Travel)</td><td>Z=250 mm</td></tr>
+                            <tr><td>Dip Position (Submerged)</td><td>Z=130 mm</td></tr>
+                            <tr><td>Setup Time</td><td>Less than 1 minute to convert</td></tr>
+                            <tr><td>Hands-on Time Reduction</td><td>1 hour → Under 5 minutes</td></tr>
+                        </tbody>
+                    </table>
+                    
+                    <h3 class="mt-4 mb-2">Creality Ender-3 Specifications</h3>
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Machine Size</td><td>44 x 41 x 46.5 cm</td></tr>
+                            <tr><td>Technology</td><td>Fused Deposition Modeling (FDM)</td></tr>
+                            <tr><td>Print Area</td><td>220 x 220 x 250mm</td></tr>
+                            <tr><td>Nozzle Size</td><td>0.4mm</td></tr>
+                            <tr><td>Suggested Material</td><td>PLA, ABS, TPU</td></tr>
+                            <tr><td>Filament Diameter</td><td>1.75mm</td></tr>
+                            <tr><td>Maximum Print Speed</td><td>180mm/s</td></tr>
+                            <tr><td>Maximum Layer Resolution</td><td>0.1mm</td></tr>
+                            <tr><td>Printing Accuracy</td><td>+/-0.1mm</td></tr>
+                            <tr><td>Maximum Nozzle Temperature</td><td>255°C</td></tr>
+                            <tr><td>Heated Bed</td><td>Yes</td></tr>
+                            <tr><td>Maximum Hotbed Temperature</td><td>110°C</td></tr>
+                            <tr><td>Connectivity</td><td>SD Card, USB</td></tr>
+                            <tr><td>File Format</td><td>STL, OBJ, G-Code</td></tr>
+                        </tbody>
+                    </table>
+                    
+                    <h3 class="mt-4 mb-2">Web Application Requirements</h3>
+                    <ul class="mb-4" style="padding-left: 1.5rem; color: var(--gray-600);">
+                        <li class="mb-2"><strong>Browser:</strong> Chrome 89+, Edge 89+, Opera 76+ (for Web Serial)</li>
+                        <li class="mb-2"><strong>Connection:</strong> HTTPS required for Web Serial API</li>
+                        <li class="mb-2"><strong>Permissions:</strong> User must grant serial port access when prompted</li>
+                        <li class="mb-2"><strong>USB Cable:</strong> Standard USB cable (same as for 3D printing)</li>
+                        <li class="mb-2"><strong>Printer:</strong> Creality Ender-3 with stock firmware or Marlin</li>
+                    </ul>
+                </section>
+
+                <!-- Contact Section -->
+                <section id="contact" class="content-section">
+                    <div class="section-header">
+                        <i class="fas fa-envelope"></i>
+                        <h2>Contact Support</h2>
+                    </div>
+                    
+                    <h3 class="mb-2">Get Help & Support</h3>
+                    <p class="mb-4">
+                        For technical support, bug reports, or feature suggestions, please use the form below or contact through the provided channels.
+                    </p>
+                    
+                    <div class="contact-cards">
+                        <div class="contact-card">
+                            <div class="contact-card-header">
+                                <i class="fas fa-user-circle"></i>
+                                <h4>Primary Contact</h4>
+                            </div>
+                            <p>For technical support and questions about the HistoEnder Pro web application:</p>
+                            <a href="mailto:jeffwaithima400@gmail.com" class="contact-email">
+                                <i class="fas fa-envelope"></i> jeffwaithima400@gmail.com
+                            </a>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <div class="contact-card-header">
+                                <i class="fas fa-book"></i>
+                                <h4>Documentation</h4>
+                            </div>
+                            <p>Access complete technical documentation, API references, and development guides.</p>
+                            <p class="text-sm text-muted mt-2">Available in the Help Center sections</p>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <div class="contact-card-header">
+                                <i class="fas fa-users"></i>
+                                <h4>Community Support</h4>
+                            </div>
+                            <p>Join the community to share experiences, tips, and modifications with other users.</p>
+                            <p class="text-sm text-muted mt-2">Search for "HistoEnder" on relevant forums</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-form">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" class="form-control" placeholder="Your name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" placeholder="Your email address">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <select id="subject" class="form-control">
+                                <option value="">Select a topic</option>
+                                <option value="bug">Bug Report</option>
+                                <option value="feature">Feature Request</option>
+                                <option value="support">Technical Support</option>
+                                <option value="question">General Question</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" class="form-control" placeholder="Describe your issue or question in detail..."></textarea>
+                        </div>
+                        
+                        <button type="button" class="btn" onclick="submitContactForm()">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </div>
+                    
+                    <div class="alert mt-4">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div>
+                            <strong>Academic Inquiries:</strong> For research-related questions about HistoEnder, refer to the original research paper by Marco Ponzetti et al.
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <p>HistoEnder Pro Help & Support Center | Version 2.1</p>
+            <p class="text-sm text-muted mt-1">
+                Based on research by Marco Ponzetti et al. "HistoEnder: a 3D printer-based histological slide autostainer that retains 3D printer functions"
+            </p>
+            <p class="text-sm text-muted mt-1">
+                © 2026 HistoEnder Pro | Open Source Automated Staining System | Contact: jeffwaithima400@gmail.com
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Mobile Navigation Functions
+        const mobileNavToggle = document.getElementById('mobileNavToggle');
+        const mobileSlideNav = document.getElementById('mobileSlideNav');
+        const mobileCloseBtn = document.getElementById('mobileCloseBtn');
+
+        function toggleMobileNav() {
+            mobileSlideNav.classList.toggle('active');
+            // Prevent body scroll when mobile nav is open
+            document.body.style.overflow = mobileSlideNav.classList.contains('active') ? 'hidden' : '';
+        }
+
+        function closeMobileNav() {
+            mobileSlideNav.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        mobileNavToggle.addEventListener('click', toggleMobileNav);
+        mobileCloseBtn.addEventListener('click', closeMobileNav);
+
+        // Close mobile nav when clicking outside
+        mobileSlideNav.addEventListener('click', function(e) {
+            if (e.target === mobileSlideNav) {
+                closeMobileNav();
+            }
+        });
+
+        // Close mobile nav with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && mobileSlideNav.classList.contains('active')) {
+                closeMobileNav();
+            }
+        });
+
+        // Navigation Functions
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all sidebar links
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Remove active class from all mobile sidebar links
+            document.querySelectorAll('.mobile-sidebar-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked sidebar link
+            const clickedLink = document.querySelector(`.sidebar-link[href="#${sectionId}"]`);
+            if (clickedLink) {
+                clickedLink.classList.add('active');
+            }
+            
+            // Add active class to mobile sidebar link
+            const mobileClickedLink = document.querySelector(`.mobile-sidebar-link[href="#${sectionId}"]`);
+            if (mobileClickedLink) {
+                mobileClickedLink.classList.add('active');
+            }
+            
+            // Scroll to top of content
+            window.scrollTo({ top: 280, behavior: 'smooth' });
+            
+            // Close mobile nav on mobile devices
+            if (window.innerWidth <= 1024) {
+                closeMobileNav();
+            }
+        }
+        
+        // FAQ Toggle Function
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const isActive = answer.classList.contains('active');
+            
+            // Close all other FAQs
+            document.querySelectorAll('.faq-answer').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.faq-question').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Toggle clicked FAQ
+            if (!isActive) {
+                answer.classList.add('active');
+                element.classList.add('active');
+            }
+        }
+        
+        // Contact Form Submission
+        function submitContactForm() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            if (!name || !email || !subject || !message) {
+                alert('Please fill in all fields before submitting.');
+                return;
+            }
+            
+            // Prepare email data
+            const mailtoLink = `mailto:jeffwaithima400@gmail.com?subject=HistoEnder Support: ${encodeURIComponent(subject)}&body=Name: ${encodeURIComponent(name)}%0D%0AEmail: ${encodeURIComponent(email)}%0D%0A%0D%0AMessage:%0D%0A${encodeURIComponent(message)}`;
+            
+            // Open email client
+            window.location.href = mailtoLink;
+            
+            // Clear form
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('subject').value = '';
+            document.getElementById('message').value = '';
+            
+            // Show success message
+            const form = document.querySelector('.contact-form');
+            const successMsg = document.createElement('div');
+            successMsg.className = 'alert';
+            successMsg.style.background = '#d1fae5';
+            successMsg.style.color = '#065f46';
+            successMsg.style.borderLeftColor = '#10b981';
+            successMsg.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <div>
+                    <strong>Message Prepared!</strong> Your email client should open with the message ready to send to jeffwaithima400@gmail.com
+                </div>
+            `;
+            form.parentNode.insertBefore(successMsg, form.nextSibling);
+            
+            // Remove success message after 5 seconds
+            setTimeout(() => {
+                successMsg.remove();
+            }, 5000);
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set first section as active
+            showSection('overview');
+            
+            // Add click handlers to all sidebar links
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('href').substring(1);
+                    showSection(sectionId);
+                });
+            });
+            
+            // Add click handlers to nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    if (this.getAttribute('href').startsWith('#')) {
+                        e.preventDefault();
+                        const sectionId = this.getAttribute('href').substring(1);
+                        showSection(sectionId);
+                    }
+                });
+            });
+            
+            // Add click handlers to mobile sidebar links
+            document.querySelectorAll('.mobile-sidebar-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('href').substring(1);
+                    showSection(sectionId);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

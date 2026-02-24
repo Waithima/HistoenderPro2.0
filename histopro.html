@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HistoEnder Pro | G-Code Generator & Direct Control</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --secondary-light: #34d399;
+            --accent: #f59e0b;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            --success: #10b981;
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --border-radius-lg: 12px;
+            --border-radius-md: 8px;
+            --border-radius-sm: 6px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            font-weight: 400;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid var(--gray-200);
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.125rem;
+            letter-spacing: -0.025em;
+        }
+
+        .logo-text .tagline {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .connection-status.connected {
+            background: rgba(16, 185, 129, 0.2);
+            color: #d1fae5;
+        }
+
+        .connection-status.disconnected {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fee2e2;
+        }
+
+        .connection-status.connecting {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fef3c7;
+        }
+
+        .connection-status i {
+            font-size: 0.625rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+        }
+
+        /* Card Styling */
+        .card {
+            background: white;
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            background: var(--gray-50);
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-header i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .card-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        /* Protocol Configuration */
+        .protocol-selector {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.875rem;
+            font-family: inherit;
+            background: white;
+            color: var(--dark);
+            transition: var(--transition);
+            cursor: pointer;
+            appearance: none;
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-size: 0.75rem;
+            pointer-events: none;
+        }
+
+        .select-wrapper select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Jar Grid */
+        .jar-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 1024px) {
+            .jar-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .jar-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .jar-card {
+            background: var(--gray-50);
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--gray-200);
+            padding: 1rem;
+            transition: var(--transition);
+        }
+
+        .jar-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .jar-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .jar-number {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.875rem;
+        }
+
+        .jar-position {
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 0.75rem;
+            color: var(--gray-600);
+            background: var(--gray-100);
+            padding: 0.125rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .jar-content {
+            margin-top: 0.5rem;
+        }
+
+        .reagent-display {
+            font-size: 0.8125rem;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+            min-height: 2rem;
+            font-weight: 500;
+        }
+
+        .time-input-group {
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
+        .time-input-group input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.875rem;
+            text-align: center;
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .time-input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .time-unit {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-size: 0.75rem;
+            pointer-events: none;
+        }
+
+        .edit-reagent-btn {
+            width: 100%;
+            padding: 0.375rem;
+            background: transparent;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-sm);
+            color: var(--gray-600);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .edit-reagent-btn:hover {
+            background: var(--gray-100);
+            border-color: var(--gray-400);
+            color: var(--gray-800);
+        }
+
+        /* Action Buttons */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .btn {
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--secondary-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #34d399;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #f87171;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
+        }
+
+        .btn-outline:hover:not(:disabled) {
+            background: var(--gray-50);
+            border-color: var(--gray-400);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Web Control Panel */
+        .web-control-panel {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #bae6fd;
+            border-radius: var(--border-radius-md);
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .web-control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .web-control-header h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #0369a1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .web-control-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .web-control-buttons .btn {
+            padding: 0.5rem 0.875rem;
+            font-size: 0.75rem;
+        }
+
+        .printer-response {
+            background: #1a1b26;
+            color: #a9b1d6;
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1rem;
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 0.75rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 0.75rem;
+            border: 1px solid #2a2b3a;
+            display: none;
+        }
+
+        .printer-response.active {
+            display: block;
+        }
+
+        .printer-response::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .printer-response::-webkit-scrollbar-track {
+            background: #2a2b3a;
+        }
+
+        .printer-response::-webkit-scrollbar-thumb {
+            background: #565f89;
+            border-radius: 3px;
+        }
+
+        /* G-Code Preview */
+        .gcode-preview {
+            background: #1a1b26;
+            color: #a9b1d6;
+            border-radius: var(--border-radius-sm);
+            padding: 1.25rem;
+            font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            border: 1px solid #2a2b3a;
+        }
+
+        .gcode-preview::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .gcode-preview::-webkit-scrollbar-track {
+            background: #2a2b3a;
+        }
+
+        .gcode-preview::-webkit-scrollbar-thumb {
+            background: #565f89;
+            border-radius: 3px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .preview-header h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Alert System */
+        .alert {
+            padding: 0.875rem 1rem;
+            border-radius: var(--border-radius-sm);
+            margin: 1rem 0;
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            border-left: 4px solid transparent;
+            font-size: 0.875rem;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left-color: var(--secondary);
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left-color: var(--primary);
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left-color: var(--accent);
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left-color: var(--danger);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--gray-400);
+            cursor: pointer;
+            line-height: 1;
+            padding: 0.25rem;
+        }
+
+        .modal-body {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Footer */
+        .app-footer {
+            background: var(--gray-50);
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .specs-list {
+            list-style: none;
+            font-size: 0.8125rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        .specs-list li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .specs-list i {
+            color: var(--primary);
+            font-size: 0.75rem;
+            margin-top: 0.125rem;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.8125rem;
+        }
+
+        .footer-links a {
+            color: var(--gray-600);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+            border-top: 1px solid var(--gray-200);
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        /* Utility Classes */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: 1.5rem;
+            }
+            
+            .app-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .connection-status {
+                align-self: flex-start;
+            }
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .text-xs {
+            font-size: 0.75rem;
+        }
+
+        .text-muted {
+            color: var(--gray-600);
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-3 {
+            margin-top: 1rem;
+        }
+
+        .mt-4 {
+            margin-top: 1.5rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Status */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .status-badge.ready {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1rem;
+            font-size: 0.8125rem;
+            color: #0369a1;
+            margin-bottom: 1rem;
+        }
+
+        .info-box i {
+            margin-right: 0.5rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-dna"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>HistoEnder Pro</h1>
+                    <p class="tagline">Automated Histological Staining G-Code Generator & Direct Control</p>
+                </div>
+            </div>
+            <div id="connectionStatus" class="connection-status disconnected">
+                <i class="fas fa-circle"></i>
+                <span>USB: Disconnected</span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="grid-2">
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-sliders-h"></i>
+                            <h3>Protocol Configuration</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="protocol-selector">
+                                <div class="select-wrapper">
+                                    <select id="protocol-select">
+                                        <option value="custom">Custom Protocol</option>
+                                        <option value="giemsa">Giemsa Staining</option>
+                                        <option value="hae">H&E Staining</option>
+                                        <option value="pas" selected>PAS Staining</option>
+                                    </select>
+                                </div>
+                                <button id="apply-protocol" class="btn btn-primary">
+                                    <i class="fas fa-play"></i> Apply
+                                </button>
+                            </div>
+
+                            <div id="alert" class="alert"></div>
+
+                            <div class="info-box">
+                                <i class="fas fa-info-circle"></i>
+                                All G-code includes jar holder installation sequence and audible start beeps
+                            </div>
+
+                            <div class="jar-grid" id="jar-grid">
+                                <!-- Generated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-cog"></i>
+                            <h3>Custom Protocol</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-sm text-muted mb-3">
+                                Customize reagent names and create your own staining protocols
+                            </p>
+                            <div class="action-grid">
+                                <button id="save-custom" class="btn btn-outline">
+                                    <i class="fas fa-save"></i> Save Custom
+                                </button>
+                                <button id="clear-custom" class="btn btn-outline">
+                                    <i class="fas fa-eraser"></i> Clear All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-bolt"></i>
+                            <h3>Actions</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="action-grid">
+                                <button id="generate-gcode" class="btn btn-primary">
+                                    <i class="fas fa-code"></i> Generate G-Code
+                                </button>
+                                <button id="dry-run" class="btn btn-secondary">
+                                    <i class="fas fa-vial"></i> Dry Run
+                                </button>
+                                <button id="download-gcode" class="btn btn-primary" disabled>
+                                    <i class="fas fa-download"></i> Download .gcode
+                                </button>
+                                <button id="reset" class="btn btn-outline">
+                                    <i class="fas fa-redo"></i> Reset
+                                </button>
+                            </div>
+
+                            <!-- Web Control Panel -->
+                            <div class="web-control-panel">
+                                <div class="web-control-header">
+                                    <h4><i class="fas fa-usb"></i> Direct USB Control</h4>
+                                    <div class="web-control-buttons">
+                                        <button id="connectBtn" class="btn btn-success">
+                                            <i class="fas fa-plug"></i> Connect USB
+                                        </button>
+                                        <button id="disconnectBtn" class="btn btn-danger" disabled>
+                                            <i class="fas fa-unplug"></i> Disconnect
+                                        </button>
+                                        <button id="sendGcodeBtn" class="btn btn-primary" disabled>
+                                            <i class="fas fa-paper-plane"></i> Send G-Code
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-muted">
+                                    <i class="fas fa-info-circle"></i>
+                                    Connect directly to your HistoEnder via USB to send G-Code without SD card.
+                                    Requires Chrome/Edge and Web Serial API support.
+                                </p>
+                                
+                                <!-- Progress Bar -->
+                                <div class="progress-container" id="progressContainer">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="progressFill"></div>
+                                    </div>
+                                    <div class="progress-text" id="progressText">0%</div>
+                                </div>
+                                
+                                <!-- Printer Response -->
+                                <div class="printer-response" id="printerResponse">
+                                    <div class="text-muted">Printer responses will appear here...</div>
+                                </div>
+                                
+                                <!-- Single Command Controls -->
+                                <div class="mt-3" id="singleCommandControls" style="display: none;">
+                                    <div class="action-grid">
+                                        <button id="sendHome" class="btn btn-outline">
+                                            <i class="fas fa-home"></i> G28 (Home)
+                                        </button>
+                                        <button id="sendMoveUp" class="btn btn-outline">
+                                            <i class="fas fa-arrow-up"></i> Z250
+                                        </button>
+                                        <button id="sendTestBeep" class="btn btn-outline">
+                                            <i class="fas fa-volume-up"></i> Test Beep
+                                        </button>
+                                        <button id="clearResponse" class="btn btn-outline">
+                                            <i class="fas fa-trash"></i> Clear Log
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="preview-header">
+                                <h3>G-Code Preview</h3>
+                                <div class="preview-actions">
+                                    <button id="copy-gcode" class="btn btn-outline btn-sm" disabled>
+                                        <i class="fas fa-copy"></i> Copy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="gcode-preview" id="gcode-preview">
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-code fa-lg mb-2"></i>
+                                    <p class="text-sm">Generate G-Code to preview here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Technical Specifications</h4>
+                    <ul class="specs-list">
+                        <li><i class="fas fa-arrow-up"></i> <strong>Safe Z-Height:</strong> Z=250mm (travel between jars)</li>
+                        <li><i class="fas fa-arrow-down"></i> <strong>Dip Height:</strong> Z=130mm (submerged position)</li>
+                        <li><i class="fas fa-crosshairs"></i> <strong>Positioning:</strong> Absolute (G90)</li>
+                        <li><i class="fas fa-shield-alt"></i> <strong>Safety Headers:</strong> G90, M106 S0, M302 S0, G28</li>
+                        <li><i class="fas fa-vial"></i> <strong>Jar Coordinates:</strong> See full layout below</li>
+                        <li><i class="fas fa-usb"></i> <strong>Direct Control:</strong> Web Serial API (115200 baud)</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Jar Coordinates</h4>
+                    <div class="specs-list">
+                        <div><strong>Jar 1:</strong> X33, Y169.5</div>
+                        <div><strong>Jar 2:</strong> X86.5, Y169.5</div>
+                        <div><strong>Jar 3:</strong> X140, Y169.5</div>
+                        <div><strong>Jar 4:</strong> X193.5, Y169.5</div>
+                        <div><strong>Jar 5:</strong> X193.5, Y60</div>
+                        <div><strong>Jar 6:</strong> X140, Y60</div>
+                        <div><strong>Jar 7:</strong> X86.5, Y60</div>
+                        <div><strong>Jar 8:</strong> X33, Y60</div>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="doc.html"><i class="fas fa-book"></i> Documentation</a>
+                        <a href="sample.html"><i class="fas fa-download"></i> Sample Protocols</a>
+                        <a href="help.html"><i class="fas fa-question-circle"></i> Help & Support</a>
+                        <a href="#"><i class="fas fa-code-branch"></i> Version 2.1 with Web Control</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>© 2026 HistoEnder Pro | Professional G-Code Generator & Direct Control for Histological Staining Systems</p>
+                <p class="mt-2"><i class="fas fa-exclamation-triangle"></i> Always verify G-Code before running on your HistoEnder</p>
+                <p class="mt-2 text-xs"><i class="fas fa-info-circle"></i> Web Serial API requires Chrome 89+, Edge 89+, or Opera 76+</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Reagent Edit Modal -->
+    <div class="modal" id="reagentEditModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Reagent</h3>
+                <button class="close-modal" onclick="closeReagentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="reagentNameInput" class="text-sm font-medium mb-2">Reagent Name:</label>
+                    <input type="text" id="reagentNameInput" class="time-input-group" 
+                           placeholder="Enter reagent name" style="width: 100%;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+                    <button onclick="closeReagentModal()" class="btn btn-outline">
+                        Cancel
+                    </button>
+                    <button onclick="saveReagentName()" class="btn btn-primary">
+                        <i class="fas fa-check"></i> Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const jarCoordinates = [
+            {x: 33, y: 169.5},   // Jar 1
+            {x: 86.5, y: 169.5}, // Jar 2
+            {x: 140, y: 169.5},  // Jar 3
+            {x: 193.5, y: 169.5}, // Jar 4
+            {x: 193.5, y: 60},   // Jar 5
+            {x: 140, y: 60},     // Jar 6
+            {x: 86.5, y: 60},    // Jar 7
+            {x: 33, y: 60}       // Jar 8
+        ];
+
+        const protocols = {
+            custom: {
+                name: "Custom Protocol",
+                times: [0, 0, 0, 0, 0, 0, 0, 0],
+                reagents: [
+                    "Reagent 1",
+                    "Reagent 2", 
+                    "Reagent 3",
+                    "Reagent 4",
+                    "Reagent 5",
+                    "Reagent 6",
+                    "Reagent 7",
+                    "Reagent 8"
+                ],
+                reverseDehydration: false
+            },
+            giemsa: {
+                name: "Giemsa Staining (Thin Blood Smear)",
+                times: [60, 1200, 30, 30, 0, 0, 0, 0],
+                reagents: [
+                    "Methanol",
+                    "Giemsa Stain 10%", 
+                    "Buffered Rinse",
+                    "Final Rinse",
+                    "Not Used",
+                    "Not Used",
+                    "Not Used",
+                    "Not Used"
+                ],
+                reverseDehydration: false
+            },
+            hae: {
+                name: "Haematoxylin & Eosin (H&E) - Full Cycle",
+                times: [900, 240, 240, 240, 240, 25, 300, 45],
+                reagents: [
+                    "Bioclear",
+                    "100% Dehyol", 
+                    "95% Dehyol",
+                    "70% Dehyol",
+                    "Distilled Water",
+                    "Haematoxylin",
+                    "Tap Water",
+                    "Eosin Y"
+                ],
+                reverseDehydration: true,
+                reverseTimes: [120, 120, 120, 600]
+            },
+            pas: {
+                name: "Periodic Acid-Schiff (PAS) Staining",
+                times: [600, 120, 120, 120, 300, 900, 300, 120],
+                reagents: [
+                    "Bioclear/Xylene",
+                    "100% Ethanol", 
+                    "95% Ethanol",
+                    "Distilled Water",
+                    "Periodic Acid",
+                    "Schiff's Reagent",
+                    "Tap Water",
+                    "Hematoxylin"
+                ],
+                reverseDehydration: true,
+                reverseTimes: [120, 120, 300]
+            }
+        };
+
+        // State Management
+        let currentGcode = "";
+        let currentEditingJar = null;
+        
+        // Web Serial API State
+        let port = null;
+        let writer = null;
+        let reader = null;
+        let isConnected = false;
+        let isSending = false;
+
+        // ==============================================
+        // SYNCHRONOUS SERIAL HANDSHAKE IMPLEMENTATION
+        // ==============================================
+
+        // 1. Define Global Handshake Variable
+        let okResolver = null; // This acts as the "wait" signal for the G-code loop
+
+        // Initialize
+        function initializeApp() {
+            createJarGrid();
+            applyProtocol();
+            setupEventListeners();
+            checkWebSerialSupport();
+        }
+
+        // Check Web Serial API support
+        function checkWebSerialSupport() {
+            if (!('serial' in navigator)) {
+                showAlert('Web Serial API not supported in this browser. Try Chrome/Edge 89+.', 'warning');
+                document.getElementById('connectBtn').disabled = true;
+                document.getElementById('connectBtn').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Not Supported';
+            }
+        }
+
+        // Create Jar Grid
+        function createJarGrid() {
+            const grid = document.getElementById('jar-grid');
+            grid.innerHTML = '';
+            
+            jarCoordinates.forEach((coord, index) => {
+                const jarNumber = index + 1;
+                
+                const jarElement = document.createElement('div');
+                jarElement.className = 'jar-card';
+                jarElement.innerHTML = `
+                    <div class="jar-card-header">
+                        <div class="jar-number">Jar ${jarNumber}</div>
+                        <div class="jar-position">X${coord.x}, Y${coord.y}</div>
+                    </div>
+                    <div class="jar-content">
+                        <div class="reagent-display" id="reagent-display-${jarNumber}">
+                            Loading...
+                        </div>
+                        <div class="time-input-group">
+                            <input type="number" 
+                                   id="jar-time-${jarNumber}"
+                                   min="0" 
+                                   max="3600" 
+                                   step="1"
+                                   placeholder="0">
+                            <span class="time-unit">s</span>
+                        </div>
+                        <button class="edit-reagent-btn" onclick="openReagentModal(${jarNumber})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </div>
+                `;
+                
+                grid.appendChild(jarElement);
+            });
+        }
+
+        // Protocol Functions
+        function applyProtocol() {
+            const protocolName = document.getElementById('protocol-select').value;
+            const protocol = protocols[protocolName];
+            
+            for (let i = 0; i < 8; i++) {
+                const timeInput = document.getElementById(`jar-time-${i + 1}`);
+                const reagentDisplay = document.getElementById(`reagent-display-${i + 1}`);
+                
+                timeInput.value = protocol.times[i];
+                reagentDisplay.textContent = protocol.reagents[i];
+                reagentDisplay.style.color = protocol.times[i] > 0 ? "#1e293b" : "#64748b";
+            }
+            
+            showAlert(`Applied ${protocol.name}`, 'success');
+        }
+
+        // Generate G-Code with Installation Sequence
+        function generateGcode(dryRun = false) {
+            const protocolName = document.getElementById('protocol-select').value;
+            const protocol = protocols[protocolName];
+            
+            // Collect times
+            const times = [];
+            for (let i = 1; i <= 8; i++) {
+                const time = parseInt(document.getElementById(`jar-time-${i}`).value) || 0;
+                times.push(dryRun && time > 0 ? 2 : time);
+            }
+            
+            // Build G-code
+            let gcode = `; HistoEnder Pro G-Code\n`;
+            gcode += `; Generated: ${new Date().toLocaleString()}\n`;
+            gcode += `; Protocol: ${protocol.name}\n`;
+            if (dryRun) gcode += `; DRY RUN - Testing Mode (all times reduced to 2 seconds)\n`;
+            gcode += `\n`;
+            
+            // Safety headers
+            gcode += `G90 ; Absolute positioning\n`;
+            gcode += `M106 S0 ; Fan off\n`;
+            gcode += `M302 S0 ; Allow cold extrusion\n`;
+            gcode += `G28 ; Home all axes\n`;
+            gcode += `\n`;
+            
+            // Jar Holder Installation Sequence (ALWAYS INCLUDED)
+            gcode += `; ==============================================\n`;
+            gcode += `; JAR HOLDER INSTALLATION\n`;
+            gcode += `; ==============================================\n`;
+            gcode += `G1 Z250 F5000 ; Move Z axis to allow installation of jar holder\n`;
+            gcode += `G1 X33 Y169.5 ; Move to Jar 1 position\n`;
+            gcode += `M0 ; PAUSE - Install jar holder and headpiece, then press resume\n`;
+            gcode += `M300 S660 P200 ; Start beep 1\n`;
+            gcode += `M300 S660 P200 ; Start beep 2\n`;
+            gcode += `M300 S660 P200 ; Start beep 3\n`;
+            gcode += `G4 S5 ; Safety delay\n`;
+            gcode += `; ==============================================\n`;
+            gcode += `; STAINING PROCEDURE\n`;
+            gcode += `; ==============================================\n\n`;
+            
+            // Process jars
+            let hasSteps = false;
+            for (let i = 0; i < times.length; i++) {
+                if (times[i] > 0) {
+                    hasSteps = true;
+                    const reagent = document.getElementById(`reagent-display-${i + 1}`).textContent;
+                    gcode += `; Jar ${i + 1}: ${reagent}\n`;
+                    gcode += `G1 Z250 F5000 ; Safe height travel\n`;
+                    gcode += `G1 X${jarCoordinates[i].x} Y${jarCoordinates[i].y} F500\n`;
+                    gcode += `G1 Z130 ; Lower to dip height\n`;
+                    gcode += `G4 S${times[i]} ; Dwell time\n`;
+                    gcode += `G1 Z250 F5000 ; Raise to safe height\n`;
+                    gcode += `\n`;
+                }
+            }
+            
+            // Reverse dehydration if needed
+            if (protocol.reverseDehydration && !dryRun && protocol.reverseTimes) {
+                gcode += `; Reverse Dehydration\n`;
+                let reverseJars = protocolName === 'hae' ? [3, 2, 1, 0] : [2, 1, 0];
+                
+                reverseJars.forEach((jarIndex, idx) => {
+                    const time = protocol.reverseTimes[idx];
+                    const reagent = document.getElementById(`reagent-display-${jarIndex + 1}`).textContent;
+                    gcode += `; Jar ${jarIndex + 1}: ${reagent}\n`;
+                    gcode += `G1 Z250 F5000\n`;
+                    gcode += `G1 X${jarCoordinates[jarIndex].x} Y${jarCoordinates[jarIndex].y} F500\n`;
+                    gcode += `G1 Z130\n`;
+                    gcode += `G4 S${time}\n`;
+                    gcode += `G1 Z250 F5000\n`;
+                    gcode += `\n`;
+                });
+            }
+            
+            // End program
+            gcode += `; ==============================================\n`;
+            gcode += `; PROGRAM COMPLETE\n`;
+            gcode += `; ==============================================\n`;
+            gcode += `M300 S440 P400 ; Completion beep 1\n`;
+            gcode += `M300 S440 P400 ; Completion beep 2\n`;
+            gcode += `M300 S440 P400 ; Completion beep 3\n`;
+            gcode += `G1 X33 Y169.5 F500 ; Return to Jar 1\n`;
+            gcode += `G1 Z250 F5000 ; Safe height\n`;
+            gcode += `M0 ; PAUSE - Remove jar holder, then press resume\n`;
+            
+            if (!hasSteps) {
+                gcode += `\n; No active steps configured\n`;
+            }
+            
+            // Update preview
+            currentGcode = gcode;
+            const preview = document.getElementById('gcode-preview');
+            preview.innerHTML = `<pre style="margin: 0; font-family: 'JetBrains Mono', monospace;">${gcode}</pre>`;
+            
+            // Enable download button
+            document.getElementById('download-gcode').disabled = false;
+            document.getElementById('copy-gcode').disabled = false;
+            
+            showAlert(`${dryRun ? 'Dry run' : 'G-Code'} generated`, 'success');
+        }
+
+        // Download G-Code
+        function downloadGcode() {
+            if (!currentGcode) {
+                showAlert('Please generate G-Code first', 'warning');
+                return;
+            }
+            
+            const protocolName = document.getElementById('protocol-select').value;
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/[:]/g, '-');
+            const filename = `histoender_${protocolName}_${timestamp}.gcode`;
+            
+            const blob = new Blob([currentGcode], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showAlert(`Downloaded: ${filename}`, 'success');
+        }
+
+        // Copy G-Code to clipboard
+        function copyGcode() {
+            if (!currentGcode) return;
+            
+            navigator.clipboard.writeText(currentGcode)
+                .then(() => showAlert('Copied to clipboard', 'success'))
+                .catch(err => showAlert('Failed to copy', 'error'));
+        }
+
+        // Save Custom Protocol
+        function saveCustomProtocol() {
+            const reagents = [];
+            const times = [];
+            
+            for (let i = 1; i <= 8; i++) {
+                reagents.push(document.getElementById(`reagent-display-${i}`).textContent);
+                times.push(parseInt(document.getElementById(`jar-time-${i}`).value) || 0);
+            }
+            
+            protocols.custom.reagents = reagents;
+            protocols.custom.times = times;
+            document.getElementById('protocol-select').value = 'custom';
+            
+            showAlert('Custom protocol saved', 'success');
+        }
+
+        // Clear Custom Inputs
+        function clearCustomInputs() {
+            for (let i = 1; i <= 8; i++) {
+                document.getElementById(`jar-time-${i}`).value = 0;
+                document.getElementById(`reagent-display-${i}`).textContent = `Reagent ${i}`;
+            }
+            
+            showAlert('All inputs cleared', 'info');
+        }
+
+        // Reset All
+        function resetAll() {
+            document.getElementById('protocol-select').value = 'pas';
+            applyProtocol();
+            document.getElementById('gcode-preview').innerHTML = `
+                <div class="text-center text-muted">
+                    <i class="fas fa-code fa-lg mb-2"></i>
+                    <p class="text-sm">Generate G-Code to preview here</p>
+                </div>
+            `;
+            document.getElementById('download-gcode').disabled = true;
+            document.getElementById('copy-gcode').disabled = true;
+            showAlert('Reset to default PAS protocol', 'info');
+        }
+
+        // Alert System
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                                  type === 'error' ? 'exclamation-circle' : 
+                                  type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            alertDiv.style.display = 'flex';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 4000);
+        }
+
+        // Reagent Modal Functions
+        function openReagentModal(jarNumber) {
+            currentEditingJar = jarNumber;
+            const currentName = document.getElementById(`reagent-display-${jarNumber}`).textContent;
+            document.getElementById('reagentNameInput').value = currentName;
+            document.getElementById('reagentEditModal').style.display = 'flex';
+        }
+
+        function closeReagentModal() {
+            document.getElementById('reagentEditModal').style.display = 'none';
+            currentEditingJar = null;
+        }
+
+        function saveReagentName() {
+            if (!currentEditingJar) return;
+            
+            const newName = document.getElementById('reagentNameInput').value.trim();
+            if (newName) {
+                document.getElementById(`reagent-display-${currentEditingJar}`).textContent = newName;
+                showAlert(`Reagent updated for Jar ${currentEditingJar}`, 'success');
+            }
+            closeReagentModal();
+        }
+
+        // ==============================================
+        // WEB SERIAL API FUNCTIONS
+        // ==============================================
+
+        // Connect to HistoEnder via USB
+        async function connectToHistoEnder() {
+            try {
+                updateConnectionStatus("connecting");
+                showAlert("Please select your HistoEnder from the device list", "info");
+                
+                // 1. Request the port from the user
+                port = await navigator.serial.requestPort();
+                
+                // 2. Open the port at the standard Ender-3 baud rate
+                await port.open({ baudRate: 115200 });
+                
+                // 3. Get writer for sending commands
+                writer = port.writable.getWriter();
+                
+                // 4. Get reader for receiving responses
+                reader = port.readable.getReader();
+                
+                isConnected = true;
+                updateConnectionStatus("connected");
+                showAlert("Connected to HistoEnder via USB", "success");
+                
+                // Enable single command controls
+                document.getElementById('singleCommandControls').style.display = 'block';
+                document.getElementById('printerResponse').classList.add('active');
+                
+                // Start reading responses in the background
+                readPrinterResponses();
+                
+                // Send a welcome message
+                await sendGcodeLine("; Connected from HistoEnder Pro Web Interface");
+                
+            } catch (err) {
+                isConnected = false;
+                updateConnectionStatus("disconnected");
+                showAlert("Connection failed: " + err.message, "error");
+                console.error("Connection error:", err);
+            }
+        }
+
+        // Disconnect from HistoEnder
+        async function disconnectFromHistoEnder() {
+            try {
+                if (reader) {
+                    reader.cancel();
+                    reader = null;
+                }
+                
+                if (writer) {
+                    await writer.close();
+                    writer = null;
+                }
+                
+                if (port) {
+                    await port.close();
+                    port = null;
+                }
+                
+                isConnected = false;
+                updateConnectionStatus("disconnected");
+                showAlert("Disconnected from HistoEnder", "info");
+                
+                // Hide single command controls
+                document.getElementById('singleCommandControls').style.display = 'none';
+                document.getElementById('printerResponse').classList.remove('active');
+                
+            } catch (err) {
+                showAlert("Disconnect error: " + err.message, "error");
+            }
+        }
+
+        // Send a single G-Code line with handshake
+        async function sendGcodeLine(line) {
+            if (!writer || !isConnected) {
+                showAlert("Not connected to HistoEnder", "error");
+                return false;
+            }
+            
+            try {
+                const encoder = new TextEncoder();
+                // Printers require a newline (\n) to execute a command
+                await writer.write(encoder.encode(line + "\n"));
+                
+                // Log sent command to response panel
+                logPrinterResponse(`> ${line}`, 'sent');
+                
+                // Wait for "ok" response for single commands too (except comments)
+                if (!line.startsWith(';') && line.trim() !== '') {
+                    const waitForOk = new Promise((resolve) => {
+                        const timeoutId = setTimeout(() => {
+                            console.warn(`Timeout waiting for 'ok' after single command: ${line}`);
+                            if (okResolver) {
+                                okResolver = null;
+                            }
+                            resolve();
+                        }, 5000);
+                        
+                        okResolver = () => {
+                            clearTimeout(timeoutId);
+                            console.log(`Received 'ok' for single command: ${line}`);
+                            resolve();
+                        };
+                    });
+                    
+                    await waitForOk;
+                }
+                
+                return true;
+            } catch (err) {
+                showAlert("Send failed: " + err.message, "error");
+                console.error("Send error:", err);
+                
+                if (err.name === 'NetworkError') {
+                    isConnected = false;
+                    updateConnectionStatus("disconnected");
+                }
+                return false;
+            }
+        }
+
+        // 2. Update the Printer Listener to detect "ok" responses
+        async function readPrinterResponses() {
+            if (!reader) return;
+            
+            try {
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) {
+                        reader.releaseLock();
+                        break;
+                    }
+                    
+                    // Convert received data to string
+                    const text = new TextDecoder().decode(value);
+                    
+                    // Display printer responses
+                    if (text.trim()) {
+                        logPrinterResponse(text.trim(), 'received');
+                        
+                        // CRITICAL: Check for "ok" response from printer
+                        // The printer sends "ok" after completing each command
+                        const lines = text.split('\n');
+                        lines.forEach(line => {
+                            const trimmedLine = line.trim();
+                            if (trimmedLine === 'ok' || trimmedLine.startsWith('ok')) {
+                                console.log("Received 'ok' from printer, resolving promise...");
+                                
+                                // If we have a resolver waiting, call it to unlock the next command
+                                if (okResolver) {
+                                    okResolver();
+                                    okResolver = null; // Clear the resolver
+                                }
+                            }
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error("Read error:", err);
+            }
+        }
+
+        // 3. Rewrite the Sending Logic with Promise-based handshake
+        async function sendEntireGcode() {
+            if (!currentGcode || !isConnected) {
+                showAlert("Generate G-Code first and connect to HistoEnder", "warning");
+                return;
+            }
+            
+            if (isSending) {
+                showAlert("Already sending G-Code to printer", "warning");
+                return;
+            }
+            
+            isSending = true;
+            const lines = currentGcode.split('\n');
+            const totalLines = lines.length;
+            let sentCount = 0;
+            let errorCount = 0;
+            
+            // Show progress bar
+            document.getElementById('progressContainer').style.display = 'block';
+            document.getElementById('sendGcodeBtn').disabled = true;
+            document.getElementById('connectBtn').disabled = true;
+            document.getElementById('disconnectBtn').disabled = true;
+            
+            showAlert("Sending G-Code to HistoEnder with synchronous handshake...", "info");
+            
+            try {
+                // Send each line with synchronous handshake
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    
+                    // Update progress
+                    const progress = Math.round((i / totalLines) * 100);
+                    document.getElementById('progressFill').style.width = `${progress}%`;
+                    document.getElementById('progressText').textContent = `${progress}% (${i+1}/${totalLines})`;
+                    
+                    // Skip empty lines
+                    if (!line) continue;
+                    
+                    // Skip comments (lines starting with ;) but still show them
+                    if (line.startsWith(';')) {
+                        logPrinterResponse(`> ${line}`, 'sent');
+                        continue;
+                    }
+                    
+                    // Step B: Send one line using writer.write()
+                    try {
+                        const encoder = new TextEncoder();
+                        await writer.write(encoder.encode(line + "\n"));
+                        logPrinterResponse(`> ${line}`, 'sent');
+                        sentCount++;
+                        
+                        // Step C: Create and await a Promise that waits for "ok"
+                        // This forces the browser to stop and wait until the printer sends "ok"
+                        console.log(`Sent: "${line}" - waiting for 'ok'...`);
+                        
+                        const waitForOk = new Promise((resolve) => {
+                            // Set a timeout as a safety fallback (10 seconds)
+                            const timeoutId = setTimeout(() => {
+                                console.warn(`Timeout waiting for 'ok' after command: ${line}`);
+                                if (okResolver) {
+                                    okResolver = null;
+                                }
+                                resolve(); // Continue anyway to avoid deadlock
+                            }, 10000);
+                            
+                            // Store the resolver so readPrinterResponses can call it
+                            okResolver = () => {
+                                clearTimeout(timeoutId);
+                                console.log(`Received 'ok' for command: ${line}`);
+                                resolve();
+                            };
+                        });
+                        
+                        // Wait for the "ok" response (or timeout)
+                        await waitForOk;
+                        
+                    } catch (err) {
+                        console.error(`Error sending line ${i}: ${line}`, err);
+                        errorCount++;
+                        logPrinterResponse(`ERROR sending: ${line}`, 'error');
+                        
+                        // If it's a connection error, stop sending
+                        if (err.name === 'NetworkError') {
+                            showAlert("Connection lost during G-code send", "error");
+                            break;
+                        }
+                    }
+                }
+                
+                // Complete progress
+                document.getElementById('progressFill').style.width = '100%';
+                document.getElementById('progressText').textContent = '100% - Complete';
+                
+                // Show completion message
+                if (errorCount === 0) {
+                    showAlert(`Successfully sent ${sentCount} commands with synchronous handshake`, "success");
+                } else {
+                    showAlert(`Sent ${sentCount} commands, ${errorCount} errors`, "warning");
+                }
+                
+            } catch (err) {
+                console.error("G-code send error:", err);
+                showAlert("Error sending G-code: " + err.message, "error");
+            } finally {
+                // Reset states
+                isSending = false;
+                okResolver = null; // Clear any dangling resolver
+                
+                // Re-enable buttons after a delay
+                setTimeout(() => {
+                    document.getElementById('progressContainer').style.display = 'none';
+                    document.getElementById('sendGcodeBtn').disabled = false;
+                    document.getElementById('connectBtn').disabled = false;
+                    document.getElementById('disconnectBtn').disabled = isConnected ? false : true;
+                }, 2000);
+            }
+        }
+
+        // Log printer response to response panel
+        function logPrinterResponse(message, type = 'received') {
+            const responseDiv = document.getElementById('printerResponse');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            let className = 'text-muted';
+            if (type === 'sent') className = 'text-primary';
+            if (type === 'received' && message.includes('ok')) className = 'text-success';
+            if (type === 'received' && message.includes('error')) className = 'text-danger';
+            
+            const messageElement = document.createElement('div');
+            messageElement.className = className;
+            messageElement.innerHTML = `<span class="text-gray-400">[${timestamp}]</span> ${message}`;
+            
+            responseDiv.appendChild(messageElement);
+            responseDiv.scrollTop = responseDiv.scrollHeight;
+        }
+
+        // Clear printer response log
+        function clearResponseLog() {
+            const responseDiv = document.getElementById('printerResponse');
+            responseDiv.innerHTML = '<div class="text-muted">Printer responses cleared</div>';
+        }
+
+        // Update connection status UI
+        function updateConnectionStatus(status) {
+            const statusEl = document.getElementById('connectionStatus');
+            const connectBtn = document.getElementById('connectBtn');
+            const disconnectBtn = document.getElementById('disconnectBtn');
+            const sendBtn = document.getElementById('sendGcodeBtn');
+            
+            switch(status) {
+                case "connected":
+                    statusEl.className = "connection-status connected";
+                    statusEl.innerHTML = '<i class="fas fa-circle"></i><span>USB: Connected</span>';
+                    connectBtn.disabled = true;
+                    disconnectBtn.disabled = false;
+                    sendBtn.disabled = false;
+                    break;
+                    
+                case "disconnected":
+                    statusEl.className = "connection-status disconnected";
+                    statusEl.innerHTML = '<i class="fas fa-circle"></i><span>USB: Disconnected</span>';
+                    connectBtn.disabled = false;
+                    disconnectBtn.disabled = true;
+                    sendBtn.disabled = true;
+                    break;
+                    
+                case "connecting":
+                    statusEl.className = "connection-status connecting";
+                    statusEl.innerHTML = '<i class="fas fa-circle"></i><span>USB: Connecting...</span>';
+                    connectBtn.disabled = true;
+                    disconnectBtn.disabled = true;
+                    sendBtn.disabled = true;
+                    break;
+            }
+        }
+
+        // Single command functions with handshake
+        async function sendHomeCommand() {
+            await sendGcodeLine("G28");
+        }
+
+        async function sendMoveUpCommand() {
+            await sendGcodeLine("G1 Z250 F5000");
+        }
+
+        async function sendTestBeepCommand() {
+            await sendGcodeLine("M300 S440 P200");
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            // Existing event listeners
+            document.getElementById('apply-protocol').addEventListener('click', applyProtocol);
+            document.getElementById('generate-gcode').addEventListener('click', () => generateGcode(false));
+            document.getElementById('dry-run').addEventListener('click', () => generateGcode(true));
+            document.getElementById('download-gcode').addEventListener('click', downloadGcode);
+            document.getElementById('copy-gcode').addEventListener('click', copyGcode);
+            document.getElementById('save-custom').addEventListener('click', saveCustomProtocol);
+            document.getElementById('clear-custom').addEventListener('click', clearCustomInputs);
+            document.getElementById('reset').addEventListener('click', resetAll);
+            
+            // Web Serial event listeners
+            document.getElementById('connectBtn').addEventListener('click', connectToHistoEnder);
+            document.getElementById('disconnectBtn').addEventListener('click', disconnectFromHistoEnder);
+            document.getElementById('sendGcodeBtn').addEventListener('click', sendEntireGcode);
+            
+            // Single command listeners
+            document.getElementById('sendHome').addEventListener('click', sendHomeCommand);
+            document.getElementById('sendMoveUp').addEventListener('click', sendMoveUpCommand);
+            document.getElementById('sendTestBeep').addEventListener('click', sendTestBeepCommand);
+            document.getElementById('clearResponse').addEventListener('click', clearResponseLog);
+            
+            // Existing modal listeners
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeReagentModal();
+                if (e.key === 'Enter' && document.getElementById('reagentEditModal').style.display === 'flex') {
+                    saveReagentName();
+                }
+            });
+            
+            document.getElementById('reagentEditModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('reagentEditModal')) {
+                    closeReagentModal();
+                }
+            });
+            
+            // Handle page unload to properly disconnect
+            window.addEventListener('beforeunload', () => {
+                if (isConnected) {
+                    disconnectFromHistoEnder();
+                }
+            });
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
