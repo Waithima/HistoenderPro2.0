@@ -17,7 +17,7 @@ It features custom 3D-printable mounts and a bespoke web-based G-code generator 
 ## Technology Stack
 
 * **Hardware Control:** G-code, Standard 3D Printer Firmware (Marlin/Klipper)
-* **Web Interface:** HTML, CSS, JavaScript, Python
+* **Web Interface:** HTML, CSS, JavaScript
 * **CAD Modeling:** OpenSCAD
 
 ---
@@ -42,13 +42,13 @@ It features custom 3D-printable mounts and a bespoke web-based G-code generator 
 ## Usage Guide
 ### Open the web interface in your browser.
 
-Input the specific beaker positions (X/Y coordinates) corresponding to your physical bed layout.
+1. Input the specific beaker positions (X/Y coordinates) corresponding to your physical bed layout.
 
-Define the desired staining durations and plunging depths (Z-axis) for each reagent.
+2. Define the desired staining durations and plunging depths (Z-axis) for each reagent.
 
-Click Generate to compile your inputs into an executable .gcode file.
+3. Click Generate to compile your inputs into an executable .gcode file.
 
-Transfer the generated .gcode file to your 3D printer (via SD card, USB, or OctoPrint) and execute the staining routine.
+4. Transfer the generated .gcode file to your 3D printer (via SD card or USB) and execute the staining routine.
 
 ## Repository Structure
 ### Development Roadmap
